@@ -1,0 +1,101 @@
+{% extends 'menu/base.html' %}
+{% block title %}Menu – Online Restaurant{% endblock %}
+
+{% block content %}
+
+<!-- 📂 Category Header -->
+<div class="category-header text-center">
+  Categories
+</div>
+
+<!-- 🧭 Category Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-3 mb-4">
+  <div class="navbar-nav mx-auto">
+    <a class="nav-link {% if not selected_category %}active{% endif %}" href="/">All</a>
+    {% for category in categories %}
+      <a class="nav-link {% if selected_category == category.id %}active{% endif %}" href="?category={{ category.id }}">{{ category.name }}</a>
+    {% endfor %}
+  </div>
+</nav>
+
+<div class="row">
+
+  <!-- 🔧 Sidebar Filters -->
+  <div class="col-md-3">
+    <form method="get" class="sidebar-filter p-3 rounded shadow-sm">
+      {% if selected_category %}
+        <input type="hidden" name="category" value="{{ selected_category }}">
+      {% endif %}
+
+      <h5 class="mb-3">Filter Dishes</h5>
+
+      <!-- Vegetarian Filter -->
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="vegetarian" value="true" id="vegCheck"
+               {% if filters.vegetarian %}checked{% endif %}>
+        <label class="form-check-label" for="vegCheck">🥬 Vegetarian</label>
+      </div>
+
+      <!-- Nuts Filter -->
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="nuts" value="true" id="nutsCheck"
+               {% if filters.nuts %}checked{% endif %}>
+        <label class="form-check-label" for="nutsCheck">🥜 Contains Nuts</label>
+      </div>
+
+<!-- Spiciness Slider -->
+<div class="mt-4">
+  <label for="spiceRange" class="form-label d-flex justify-content-between">
+    <span>🌶️ Spiciness</span>
+    <span><strong id="spiceLevel">
+      {% if filters.spice == "-1" or filters.spice == None %}Not Set{% else %}{{ filters.spice }}{% endif %}
+    </strong></span>
+  </label>
+  <input type="range" class="form-range" min="-1" max="4" step="1"
+         id="spiceRange" name="spice"
+         value="{{ filters.spice|default:'-1' }}">
+</div>
+
+
+
+
+      <!-- Buttons -->
+      <button type="submit" class="btn btn-primary w-100 mt-3">Apply Filters</button>
+      <a href="{% if selected_category %}?category={{ selected_category }}{% else %}/{% endif %}" class="btn btn-secondary w-100 mt-2">Clear Filters</a>
+    </form>
+  </div>
+
+  <!-- 🍽️ Dishes Display -->
+  <div class="col-md-9">
+    <div class="row">
+      {% if dishes %}
+        {% for dish in dishes %}
+          <div class="col-md-4 col-sm-6 mb-4 d-flex align-items-stretch">
+            <div class="card shadow-sm h-100">
+              <img src="{{ dish.image.url }}" class="card-img-top" alt="{{ dish.name }}">
+              <div class="card-body d-flex flex-column justify-content-between">
+                <div>
+                  <h5 class="card-title">{{ dish.name }}</h5>
+                  <p class="card-text text-muted">₾{{ dish.price }}</p>
+                  <p>🥜 Nuts: {% if dish.nuts %}✅{% else %}❌{% endif %}</p>
+                  <p>🥬 Vegetarian: {% if dish.vegetarian %}✅{% else %}❌{% endif %}</p>
+                  <p>🌶️ Spiciness: {{ dish.spiciness }}</p>
+                </div>
+                <form action="{% url 'add_to_cart' dish.id %}" method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-danger w-100 mt-2">Add to Cart</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col">
+          <p class="text-muted">No dishes match your filters.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

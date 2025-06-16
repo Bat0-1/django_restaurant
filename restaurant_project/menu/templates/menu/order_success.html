@@ -1,0 +1,13 @@
+{% extends 'menu/base.html' %}
+{% block title %}Order Placed{% endblock %}
+{% block banner_text %}Thank You!{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">✅ Your order was successfully placed!</h2>
+<p>Your order number is: <strong>#{{ order.user_order_number }}</strong></p>
+<p>Total: <strong>₾{{ order.total_price }}</strong></p>
+<p>We’ll deliver to: <strong>{{ order.address }}</strong></p>
+<p>📞 Contact: {{ order.phone }}</p>
+
+<a href="/" class="btn btn-primary mt-4">Back to Home</a>
+{% endblock %}

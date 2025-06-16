@@ -1,0 +1,30 @@
+{% extends 'menu/base.html' %}
+{% block title %}Your Orders{% endblock %}
+{% block banner_text %}Order History{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📦 Your Past Orders</h2>
+
+{% if orders %}
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Order #</th>
+        <th>Date</th>
+        <th>Total Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>#{{ order.user_order_number|default:order.id }}</td>
+        <td>{{ order.created_at|date:"F j, Y, g:i a" }}</td>
+        <td>₾{{ order.total_price }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>You haven’t placed any orders yet.</p>
+{% endif %}
+{% endblock %}

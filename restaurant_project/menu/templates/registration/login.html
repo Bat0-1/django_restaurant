@@ -1,0 +1,31 @@
+{% extends 'menu/base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<h2>Login</h2>
+{% if form.errors %}
+  <div class="alert alert-danger">
+    {% for field in form %}
+      {% for error in field.errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+      <p>{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="id_username">Email</label>
+    <input type="email" name="username" autofocus required class="form-control" id="id_username">
+  </div>
+
+  <div class="mb-3">
+    <label for="id_password">Password</label>
+    <input type="password" name="password" required class="form-control" id="id_password">
+  </div>
+
+  <button type="submit" class="btn btn-danger w-100">Log In</button>
+</form>
+{% endblock %}
